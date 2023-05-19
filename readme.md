@@ -1,4 +1,4 @@
-# App Title
+# SimuStock Paper Trading App
 
 ## Summary 
 * This is a simulation trading app for both stocks and cryptocurrencies, targeted towards mobile users. It allows users to register, view near real-time market data, manage a virtual portfolio, execute trades, and gain an understanding and experience without any real-world financial risk.
@@ -23,18 +23,18 @@
 | POST | /login | READ | Log in an existing user |
 | GET | /logout | READ | Log out the current user |
 | GET | /portfolio | READ | Show the current user's portfolio |
-| POST | /portfolio/<ticker> | CREATE | Add a new asset to the portfolio |
-| PUT | /portfolio/<ticker> | UPDATE | Update an asset in the portfolio |
-| DELETE | /portfolio/<ticker> | DELETE | Remove an asset from the portfolio |
+| POST | /portfolio/:ticker | CREATE | Add a new asset to the portfolio |
+| PUT | /portfolio/:ticker | UPDATE | Update an asset in the portfolio |
+| DELETE | /portfolio/:ticker | DELETE | Remove an asset from the portfolio |
 | POST | /trades | CREATE | Execute a trade |
-| GET | /assets/search/<ticker> | READ | Search for a stock or crypto |
-| GET | /assets/prices/<ticker> | READ | Get the real-time price of an asset |
+| GET | /assets/search/:ticker | READ | Search for a stock or crypto |
+| GET | /assets/prices/:ticker | READ | Get the real-time price of an asset |
 | GET | /users | READ | Retrieve a list of all users |
-| POST | /users/<username>/friends | CREATE | Send a friend request |
-| PUT | /users/<username>/friends | UPDATE | Accept a friend request |
-| DELETE | /users/<username>/friends | DELETE | Remove a friend |
-| GET | /users/<username>/portfolio | READ | View a friend's portfolio |
-| GET | /users/<username>/trades | READ | View a friend's trades |
+| POST | /users/:username/friends | CREATE | Send a friend request |
+| PUT | /users/:username/friends | UPDATE | Accept a friend request |
+| DELETE | /users/:username/friends | DELETE | Remove a friend |
+| GET | /users/:username/portfolio | READ | View a friend's portfolio |
+| GET | /users/:username/trades | READ | View a friend's trades |
 ---
 ## ERD
 ![erd](https://i.imgur.com/EgMCLCL.png)
