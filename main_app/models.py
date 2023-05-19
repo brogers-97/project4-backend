@@ -6,18 +6,18 @@ class User(AbstractUser):
 
     groups = models.ManyToManyField(
         Group,
-        verbose_name=_('groups'),
+        verbose_name=('groups'),
         blank=True,
         related_name="group_user_set",
         related_query_name="user",
-        help_text=_(
+        help_text=(
             'The groups this user belongs to. A user will get all permissions '
             'granted to each of their groups.'
         ),
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        verbose_name=_('user permissions'),
+        verbose_name=('user permissions'),
         blank=True,
         related_name="permission_user_set",
         related_query_name="user",
