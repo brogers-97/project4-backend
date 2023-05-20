@@ -4,6 +4,10 @@ from .utils import soup_data
 from rest_framework.response import Response 
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from rest_framework import status
+import json
 
 @api_view(['GET'])
 def scrape_soup_data(request, ticker):
@@ -23,12 +27,14 @@ def login_view(request):
             return redirect('home')
         else:
             return 'invalid login'
-        
+
+@csrf_exempt
 def signup_view(request):
     if request.method == 'POST':
-        username = request.data['username']
-        email = request.data['userEmail']
-        password = request.data['userPassword']
+        data = json.loads(request.body)
+        username = data.get('username')
+        email = data.get('userEmail')
+        password = data.get('userPassword')
         user = User.objects.create_user(username, email, password)
         login(request, user)
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)

@@ -124,6 +124,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
