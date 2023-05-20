@@ -15,10 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from main_app.views import scrape_soup_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('main_app.urls')),
     path('api/scrape/<str:ticker>/', scrape_soup_data, name='scrape_data'),
 ]
