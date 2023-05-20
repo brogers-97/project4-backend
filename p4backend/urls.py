@@ -20,6 +20,6 @@ from main_app.views import scrape_soup_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('main_app.urls')),
+    path('/', include('main_app.urls')),
     path('api/scrape/<str:ticker>/', scrape_soup_data, name='scrape_data'),
 ]
