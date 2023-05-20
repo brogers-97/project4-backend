@@ -6,3 +6,4 @@ class User(AbstractUser):
         buys = self.trades.filter(trade_type='BUY').group_by('asset_type', 'ticker').sum('quantity')
         sells = self.trades.filter(trade_type='SELL').group_by('asset_type', 'ticker').sum('quantity')
         return buys - sells
+
