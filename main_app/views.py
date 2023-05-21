@@ -7,11 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .utils import soup_data, search_assets, get_asset_price
 from rest_framework.response import Response
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core import serializers
@@ -42,27 +38,27 @@ def register_view(request):
             return JsonResponse({"error": "Unable to register user"}, status=400)
 
 
-@csrf_exempt
-def login_view(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        username = data.get("username")
-        password = data.get("password")
+# @csrf_exempt
+# def login_view(request):
+#     if request.method == "POST":
+#         data = json.loads(request.body)
+#         username = data.get("username")
+#         password = data.get("password")
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({"message": "User logged in successfully"}, status=200)
-        else:
-            return JsonResponse({"error": "Invalid username or password"}, status=400)
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return JsonResponse({"message": "User logged in successfully"}, status=200)
+#         else:
+#             return JsonResponse({"error": "Invalid username or password"}, status=400)
 
 
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def logout_view(request):
-    if request.method == "GET":
-        logout(request)
-        return JsonResponse({"message": "User logged out successfully"}, status=200)
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+# def logout_view(request):
+#     if request.method == "GET":
+#         logout(request)
+#         return JsonResponse({"message": "User logged out successfully"}, status=200)
 
 
 @csrf_exempt
