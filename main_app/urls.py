@@ -9,7 +9,7 @@ urlpatterns = [
     # Authentication
     path('register/', views.register_view, name='register'),
     path('login/', TokenObtainPairView.as_view(), name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    # path('logout/', views.logout_view, name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # User trades and portfolio
