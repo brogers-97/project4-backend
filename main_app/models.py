@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 class User(AbstractUser):
     zip_code = models.CharField(max_length=5)
     funds = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    watchlist = ArrayField(models.CharField(max_length=10), default=list)
+    watchlist = ArrayField(models.CharField(max_length=10), blank=True,default=list)
 
 ASSET_TYPES = [
     ('STOCK', 'Stock'),
