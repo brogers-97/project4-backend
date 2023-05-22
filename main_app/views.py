@@ -67,6 +67,17 @@ def register_view(request):
 def create_trade(request):
     if request.method == "POST":
         data = json.loads(request.body)
+        total_price = data.get("quantity") * data.get("price") # calculates total price for the trade
+        if data.get("trade_type") == "BUY":
+            if request.user.funds < total_price:
+                return JsonResponse({"error": "Not enough funds for this trade"}, status=400)
+            else:
+                request.user.funds -= total_price # subtract total price from user's funds
+                request.user.save()
+        else: # trade_type is 'SELL'
+            request.user.funds += total_price # add total price to user's funds
+            request.user.save()
+            
         trade = Trade.objects.create(
             user=request.user,
             asset_type=data.get("asset_type"),
