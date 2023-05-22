@@ -185,11 +185,12 @@ def get_user_trades(request, username):
                 {"error": f"User {username} does not exist"}, status=400
             )
 
-
+@csrf_exempt
 def search_asset(request, ticker):
     if request.method == "GET":
         try:
-            assets = search_assets(ticker)
+            # assets = search_assets(ticker)
+            assets = soup_data(ticker)
             return JsonResponse(assets, safe=False)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
