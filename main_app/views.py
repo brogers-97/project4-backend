@@ -1,15 +1,13 @@
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .utils import soup_data
 from rest_framework.response import Response
 from rest_framework.decorators import (api_view)
-from django.core import serializers
-from .models import Trade, Follower
+from .models import Trade
 
 User = get_user_model()
 
