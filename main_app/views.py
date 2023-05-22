@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
@@ -70,3 +70,12 @@ def search_asset(request, ticker):
             return JsonResponse(assets, safe=False)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
+def users_stocks(request):
+    if request.method == 'GET':
+        try:
+            stocks = Trade.objects.all().values()
+            print(stocks)
+            return JsonResponse(list(stocks), safe=False)
+        except Trade.DoesNotExist:
+            return JsonResponse({"message": "User stocks not found"}, status=404)
