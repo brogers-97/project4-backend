@@ -79,3 +79,9 @@ def users_stocks(request):
             return JsonResponse(list(stocks), safe=False)
         except Trade.DoesNotExist:
             return JsonResponse({"message": "User stocks not found"}, status=404)
+
+
+def add_stock(request, stock_data):
+    if request.method == 'POST':
+        try:
+            
