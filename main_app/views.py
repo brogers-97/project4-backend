@@ -146,3 +146,18 @@ def user_watchlist(request):
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
 
+def get_user(request):
+    if request.method == 'GET':
+        try:
+            user_id = request.GET.get('user_id')
+            print(user_id)
+            user = User.objects.get(id=user_id)
+            user_data = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'funds': user.funds
+            }
+            return JsonResponse(user_data, safe=False)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=400)
