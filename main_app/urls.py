@@ -18,6 +18,7 @@ urlpatterns = [
     path('watchlist/', views.add_to_watchlist, name='add_to_watchlist'),
     path('get_watchlist/', views.user_watchlist, name='user_watchlist'),
     path('view_trades/', views.users_stocks, name='users_stocks'),
+    path('user_info/', views.get_user, name='get_user'),
 
 
     # Assets
