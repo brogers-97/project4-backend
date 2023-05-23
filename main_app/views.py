@@ -43,34 +43,6 @@ def register_view(request):
             return JsonResponse({"error": "Unable to register user"}, status=400)
 
 @csrf_exempt
-def create_trade(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        total_price = data.get("quantity") * data.get("price") # calculates total price for the trade
-        if data.get("trade_type") == "BUY":
-            if request.user.funds < total_price:
-                return JsonResponse({"error": "Not enough funds for this trade"}, status=400)
-            else:
-                request.user.funds -= total_price # subtract total price from user's funds
-                request.user.save()
-        else: # trade_type is 'SELL'
-            request.user.funds += total_price # add total price to user's funds
-            request.user.save()
-            
-        trade = Trade.objects.create(
-            user=request.user,
-            asset_type=data.get("asset_type"),
-            ticker=data.get("ticker"),
-            quantity=data.get("quantity"),
-            price=data.get("price"),
-            trade_type=data.get("trade_type"),
-        )
-        if trade:
-            return JsonResponse({"message": "Trade created successfully"}, status=201)
-        else:
-            return JsonResponse({"error": "Unable to create trade"}, status=400)
-
-@csrf_exempt
 def search_asset(request, ticker):
     if request.method == "GET":
         try:
@@ -89,7 +61,7 @@ def users_stocks(request):
             return JsonResponse({"message": "User stocks not found"}, status=404)
 
 @csrf_exempt
-def add_stock(request):
+def trade_stock(request):
     if request.method == 'POST':
         try:
             print(request.body)
@@ -106,7 +78,7 @@ def add_stock(request):
 
             new_trade.save()
 
-            return JsonResponse({"message": "Stock added successfully"}, status=201)
+            return JsonResponse({"message": "Trade added successfully"}, status=201)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
 
