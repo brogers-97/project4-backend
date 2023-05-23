@@ -75,7 +75,6 @@ def users_stocks(request):
     if request.method == 'GET':
         try:
             stocks = Trade.objects.all().values()
-            print(stocks)
             return JsonResponse(list(stocks), safe=False)
         except Trade.DoesNotExist:
             return JsonResponse({"message": "User stocks not found"}, status=404)
@@ -84,6 +83,7 @@ def users_stocks(request):
 def add_stock(request):
     if request.method == 'POST':
         try:
+            print(request.body)
             data = json.loads(request.body)
 
             new_trade = Trade(
@@ -100,3 +100,40 @@ def add_stock(request):
             return JsonResponse({"message": "Stock added successfully"}, status=201)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
+
+@csrf_exempt
+def add_to_watchlist(request):
+    if request.method == 'POST':
+        try:
+            print(request.body)
+            data = json.loads(request.body)
+            print(data)
+            user_id = data.get('user_id')
+            new_stock = data.get('new_stock')
+            user = User.objects.get(id=user_id)
+
+            if user.watchlist is None:
+                user.watchlist = {}
+
+            user.watchlist.append(new_stock)
+            user.save()
+
+            return JsonResponse({"message": "Stock added successfully"}, status=201)
+        except User.DoesNotExist:
+            return JsonResponse({"message": "User not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=400)
+
+def user_watchlist(request):
+    if request.method == 'GET':
+        try:
+            
+            user_id = request.GET.get('user_id')
+            user = User.objects.get(id=user_id)
+            watchlist = user.watchlist
+            print(watchlist)
+
+            return JsonResponse(watchlist, safe=False)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=400)
+
