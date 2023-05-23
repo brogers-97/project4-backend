@@ -11,7 +11,7 @@ urlpatterns = [
 
 
     # User trades and portfolio
-    path('trades/', views.create_trade, name='create_trade'),
+    path('trades/', views.add_stock, name='add_stock'),
     path('view_trades/', views.users_stocks, name='users_stocks'),
 
 
