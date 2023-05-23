@@ -80,8 +80,23 @@ def users_stocks(request):
         except Trade.DoesNotExist:
             return JsonResponse({"message": "User stocks not found"}, status=404)
 
-
-def add_stock(request, stock_data):
+@csrf_exempt
+def add_stock(request):
     if request.method == 'POST':
         try:
-            
+            data = json.loads(request.body)
+
+            new_trade = Trade(
+                asset_type=data['asset_type'],
+                ticker=data['ticker'],
+                quantity=data['quantity'],
+                price=data['price'],
+                trade_type=data['trade_type'],
+                user_id=data['user_id']
+            )
+
+            new_trade.save()
+
+            return JsonResponse({"message": "Stock added successfully"}, status=201)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=400)
