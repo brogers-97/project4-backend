@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 from .utils import soup_data
@@ -29,7 +30,15 @@ def register_view(request):
             username=username, password=password, zip_code=zip_code
         )
         if user:
-            return JsonResponse({"message": "User registered successfully"}, status=201)
+
+            refresh = RefreshToken.for_user(user)
+            res_data = {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'message': 'User got in'
+            }
+
+            return JsonResponse(res_data, status=201)
         else:
             return JsonResponse({"error": "Unable to register user"}, status=400)
 
