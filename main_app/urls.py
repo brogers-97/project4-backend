@@ -4,10 +4,13 @@ from django.urls import path
 #     TokenRefreshView,
 # )
 from . import views
+from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     # Authentication
     path('register/', views.register_view, name='register'),
+    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    
 
 
     # User trades and portfolio
