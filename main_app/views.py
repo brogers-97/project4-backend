@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum, Case, When, IntegerField
 from .utils import soup_data
 from rest_framework.response import Response
 from rest_framework.decorators import (api_view)
@@ -133,3 +134,38 @@ def get_user(request):
             return JsonResponse(user_data, safe=False)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
+        
+def user_shares(request):
+    if request.method == 'GET':
+        try:
+            # retrieve user from request
+            user_id = request.GET.get('user_id')
+            user = User.objects.get(id=user_id)
+
+            # retrieve ticker from request (if sent)
+            ticker = request.GET.get('ticker', None)
+
+            # get user's trades of that ticker
+            trades = Trade.objects.filter(user=user)
+            if ticker:
+                trades = trades.filter(ticker=ticker)
+
+            trades = trades.values('ticker', 'asset_type')
+
+            # Add up buys and sells to find total quantity
+            trades = trades.annotate(
+                total_quantity=Sum(
+                    Case(
+                        When(trade_type='BUY', then='quantity'),
+                        When(trade_type='Sell', then='quantity'),
+                        default=0,
+                        output_field=IntegerField()
+                    )
+                )
+            )
+
+            # return aggregated data
+            return JsonResponse(list(trades), safe=False)
+        
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=400)
