@@ -180,3 +180,6 @@ def user_shares(request):
         
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
+
+def update_funds(request):
+    return JsonResponse({'msg': 'success'})
