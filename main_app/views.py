@@ -128,7 +128,8 @@ def get_user(request):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'funds': user.funds
+                'funds': user.funds,
+                'zip_code': user.zip_code,
             }
             return JsonResponse(user_data, safe=False)
         except Exception as e:
