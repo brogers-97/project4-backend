@@ -124,13 +124,22 @@ def add_to_watchlist(request):
 def user_watchlist(request):
     if request.method == 'GET':
         try:
-            
             user_id = request.GET.get('user_id')
             user = User.objects.get(id=user_id)
             watchlist = user.watchlist
-            print(watchlist)
+            
+            # fetch each ticker's data using the soup_data function
+            watchlist_data = []
+            for ticker in watchlist:
+                ticker_data = soup_data(ticker)
+                watchlist_data.append({
+                    'ticker': ticker,
+                    'name': ticker_data[0][0],
+                    'price': ticker_data[0][1],
+                    'percentage': ticker_data[2]
+                })
 
-            return JsonResponse(watchlist, safe=False)
+            return JsonResponse(watchlist_data, safe=False)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
 
