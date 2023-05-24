@@ -181,5 +181,14 @@ def user_shares(request):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
 
+@csrf_exempt
 def update_funds(request):
-    return JsonResponse({'msg': 'success'})
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        user_id = data['userId']
+        funds = data['funds']
+        user = User.objects.get(id=user_id)
+        print('old funds',user.funds)
+        user.funds = funds
+        user.save()
+        return JsonResponse({'msg': 'success'})
