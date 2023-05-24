@@ -17,10 +17,11 @@ urlpatterns = [
     path('trades/', views.trade_stock, name='trade_stock'),
     path('watchlist/', views.add_to_watchlist, name='add_to_watchlist'),
     path('get_watchlist/', views.user_watchlist, name='user_watchlist'),
-    path('view_trades/', views.users_stocks, name='users_stocks'),
+    path('view_trades/', views.trade_history, name='trade_history'),
     path('user_info/', views.get_user, name='get_user'),
     path('user_shares/', views.user_shares, name='user_shares'),
     path('update_funds/', views.update_funds, name='update_funds'),
+    path('user_all_shares/', views.user_all_shares, name='user_all_shares'),
 
 
     # Assets

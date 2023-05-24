@@ -54,7 +54,7 @@ def search_asset(request, ticker):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-def users_stocks(request):
+def trade_history(request):
     if request.method == 'GET':
         try:
             stocks = Trade.objects.all().values()
@@ -192,3 +192,43 @@ def update_funds(request):
         user.funds = funds
         user.save()
         return JsonResponse({'msg': 'success'})
+
+
+def user_all_shares(request):
+    if request.method == 'GET':
+        try:
+            # retrieve user from request
+            user_id = request.GET.get('user_id')
+            user = User.objects.get(id=user_id)
+
+            # get user's trades
+            trades = Trade.objects.filter(user=user)
+
+            # get unique tickers
+            tickers = trades.values_list('ticker', flat=True).distinct()
+
+            total_shares_list = []
+
+            for ticker in tickers:
+                # filter trades for current ticker
+                ticker_trades = trades.filter(ticker=ticker)
+
+                # calculate total buy quantity
+                buy_quantity = ticker_trades.filter(trade_type='BUY').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+                
+                # calculate total sell quantity
+                sell_quantity = ticker_trades.filter(trade_type='SELL').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+                # calculate the difference for total shares
+                total_shares = buy_quantity - sell_quantity
+
+                # append ticker and total shares to the list
+                total_shares_list.append({ticker: total_shares})
+
+            # return the total shares list
+            return JsonResponse(total_shares_list, safe=False)
+        
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=400)
+        
+
