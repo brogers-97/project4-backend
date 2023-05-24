@@ -1,3 +1,4 @@
+from decimal import Decimal
 import json
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
@@ -5,11 +6,11 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Sum, Case, When, IntegerField
+from django.db.models import Sum, Case, When, IntegerField, F
 from .utils import soup_data
 from rest_framework.response import Response
 from rest_framework.decorators import (api_view)
-from .models import Trade
+from .models import User, Trade
 
 User = get_user_model()
 
@@ -65,7 +66,6 @@ def users_stocks(request):
 def trade_stock(request):
     if request.method == 'POST':
         try:
-            print(request.body)
             data = json.loads(request.body)
 
             new_trade = Trade(
@@ -79,7 +79,22 @@ def trade_stock(request):
 
             new_trade.save()
 
-            return JsonResponse({"message": "Trade added successfully"}, status=201)
+            # get the user
+            user = User.objects.get(id=data['user_id'])
+
+            # calculate the total cost or gain from the trade
+            total = Decimal(data['price'] * data['quantity'])
+
+            # update the user's funds
+            if data['trade_type'] == 'SELL':
+                user.funds += total
+            elif data['trade_type'] == 'BUY':
+                user.funds -= total
+
+            # save the updated user info
+            user.save()
+
+            return JsonResponse({"message": "Trade added successfully", "funds": user.funds}, status=201)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
 
@@ -151,22 +166,17 @@ def user_shares(request):
             if ticker:
                 trades = trades.filter(ticker=ticker)
 
-            trades = trades.values('ticker', 'asset_type')
+            # calculate total buy quantity
+            buy_quantity = trades.filter(trade_type='BUY').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
 
-            # Add up buys and sells to find total quantity
-            trades = trades.annotate(
-                total_quantity=Sum(
-                    Case(
-                        When(trade_type='BUY', then='quantity'),
-                        When(trade_type='Sell', then='quantity'),
-                        default=0,
-                        output_field=IntegerField()
-                    )
-                )
-            )
+            # calculate total sell quantity
+            sell_quantity = trades.filter(trade_type='SELL').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
 
-            # return aggregated data
-            return JsonResponse(list(trades), safe=False)
+            # calculate the difference for total shares
+            total_shares = buy_quantity - sell_quantity
+
+            # return the total shares
+            return JsonResponse({'total_shares': total_shares})
         
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
