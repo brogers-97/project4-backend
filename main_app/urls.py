@@ -19,6 +19,7 @@ urlpatterns = [
     path('get_watchlist/', views.user_watchlist, name='user_watchlist'),
     path('view_trades/', views.users_stocks, name='users_stocks'),
     path('user_info/', views.get_user, name='get_user'),
+    path('user_shares/', views.user_shares, name='user_shares'),
 
 
     # Assets
