@@ -9,6 +9,7 @@ def soup_data(ticker):
     data = soup.find('bg-quote', attrs={'class': 'value'})
     co_name = soup.find('h1', attrs={'class': 'company__name'})
     extra = soup.find_all('li', attrs={'class': 'kv__item'})
+    percentage = soup.find('span', attrs={'class': 'change--percent--q'})
     extra_data = []
     
     data_parts = data.text
@@ -19,7 +20,7 @@ def soup_data(ticker):
         extra_data.append({title: value})
 
     current_stock = [co_name.text, data_part]
-    return [current_stock, extra_data]
+    return [current_stock, extra_data, percentage.text]
 
 def search_assets(ticker):
     response = requests.get(f'https://www.marketwatch.com/investing/stock/{ticker}')
