@@ -181,24 +181,5 @@ def user_shares(request):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
 
-@api_view(['PATCH'])        
 def update_funds(request):
-    # retrieve user_id and new funds from the request data
-    user_id = request.data.get('user_id')
-    new_funds = request.data.get('funds')
-
-    # ensure that new_funds can be converted to a Decimal
-    try:
-        new_funds = Decimal(new_funds)
-    except (ValueError, TypeError):
-        return Response({'error': 'Invalid funds value.'}, status=400)
-    
-    # get the user object or return 404 response
-    user = get_object_or_404(User, pk=user_id)
-
-    # update the user's funds and save the user object
-    user.funds = new_funds
-    user.save()
-
-    # return a successful response with the updated funds
-    return Response({'funds': str(user.funds)}, status=200)
+    return JsonResponse({'msg': 'success'})
