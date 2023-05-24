@@ -22,6 +22,7 @@ urlpatterns = [
     path('user_shares/', views.user_shares, name='user_shares'),
     path('update_funds/', views.update_funds, name='update_funds'),
     path('user_all_shares/', views.user_all_shares, name='user_all_shares'),
+    path('user_portfolio_values/', views.user_portfolio_values, name='user_portfolio_values'),
 
 
     # Assets

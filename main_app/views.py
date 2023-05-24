@@ -232,3 +232,49 @@ def user_all_shares(request):
             return JsonResponse({'message': str(e)}, status=400)
         
 
+def user_portfolio_values(request):
+    if request.method == 'GET':
+        try:
+            # retrieve user from request
+            user_id = request.GET.get('user_id')
+            user = User.objects.get(id=user_id)
+
+            # gett user's trades
+            trades = Trade.objects.filter(user=user)
+
+            # get unique tickers
+            tickers = trades.values_list('ticker', flat=True).distinct()
+
+            portfolio_value_list = []
+            total_portfolio_value = Decimal(0)
+
+            for ticker in tickers:
+                # filter trades for current ticker
+                ticker_trades = trades.filter(ticker=ticker)
+
+                # calculate total buy quantity
+                buy_quantity = ticker_trades.filter(trade_type='BUY').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+                
+                # calculate total sell quantity
+                sell_quantity = ticker_trades.filter(trade_type='SELL').aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+                # calculate the difference for total shares
+                total_shares = buy_quantity - sell_quantity
+
+                # get teh current price for the ticker
+                asset_info = soup_data(ticker)
+                current_price = Decimal(asset_info[0][1].replace(',', ''))
+
+                # calculate the total value for this ticker and append to portfolio list
+                total_value = current_price * total_shares
+                portfolio_value_list.append({ticker: str(total_value)})
+
+                # update total portfolio value
+                total_portfolio_value += total_value
+                print('total port value: ', total_portfolio_value)
+
+            # return the portfolio values list & total portfolio value
+            return JsonResponse({"portfolio_values": portfolio_value_list, "total_portfolio_value": str(total_portfolio_value)}, safe=False)
+        
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=400)
