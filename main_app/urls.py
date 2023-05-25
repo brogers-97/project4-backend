@@ -11,8 +11,6 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     
-
-
     # User trades and portfolio
     path('trades/', views.trade_stock, name='trade_stock'),
     path('watchlist/', views.add_to_watchlist, name='add_to_watchlist'),
@@ -23,7 +21,11 @@ urlpatterns = [
     path('update_funds/', views.update_funds, name='update_funds'),
     path('user_all_shares/', views.user_all_shares, name='user_all_shares'),
     path('user_portfolio_values/', views.user_portfolio_values, name='user_portfolio_values'),
+    path('users_and_stocks/', views.users_and_stocks, name='users_and_stocks'),
 
+    # Following and unfollowing users
+    path('follow/', views.follow_user, name='follow_user'),
+    path('unfollow/', views.unfollow_user, name='unfollow_user'),
 
     # Assets
     path('assets/search/<str:ticker>/', views.search_asset, name='search_asset'),
