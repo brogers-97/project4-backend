@@ -95,6 +95,8 @@ def trade_stock(request):
             # save the updated user info
             user.save()
 
+            print('new funds:', user.funds)
+
             return JsonResponse({"message": "Trade added successfully", "funds": user.funds}, status=201)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=400)
